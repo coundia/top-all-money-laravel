@@ -1,0 +1,451 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Top All Money API",
+        "description": "Documentation de l'API Laravel 12 avec Swagger (L5-Swagger)",
+        "contact": {
+            "email": "support@tonapp.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local"
+        },
+        {
+            "url": "https://api.tonapp.com",
+            "description": "Production"
+        }
+    ],
+    "paths": {
+        "/api/accounts": {
+            "get": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Lister les comptes",
+                "operationId": "1f1ea4d0ec24f55da316f8a01a4773e6",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Recherche code/description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "isDirty",
+                        "in": "query",
+                        "description": "Filtrer par isDirty (0/1)",
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Account"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Créer un compte",
+                "operationId": "ab9a4fc50a7da5bcc14d51103505fa1d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Créé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/accounts/{id}": {
+            "get": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Afficher un compte",
+                "operationId": "4e232d09ce1ee2f7b9196515671eb425",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "UUID du compte",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Mettre à jour un compte",
+                "operationId": "33c854e376d883a94eb29aa462fee428",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "UUID du compte",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Supprimer (soft delete) un compte",
+                "operationId": "1b5ae9626964e2272e51304b39c7f0a4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "UUID du compte",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supprimé"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Modifier partiellement un compte",
+                "operationId": "e18271216930525aa7d3ab821a85f482",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "UUID du compte",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Account": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "e3a9f8e0-1f8d-4f5e-9c8f-7a6b2d1c4e90"
+                    },
+                    "remoteId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "localId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "ACC-001",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "XOF",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "typeAccount": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "dateStartAccount": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "dateEndAccount": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "balance": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "balance_prev": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "balance_blocked": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "balance_init": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "balance_goal": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "balance_limit": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "isDefault": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "isShared": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isDirty": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "version": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2025-09-01T10:00:00Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2025-09-01T10:00:00Z"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "syncAt": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AccountCreateRequest": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "example": "ACC-001"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "XOF"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isDefault": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "AccountUpdateRequest": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "example": "ACC-002"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "XOF"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isDefault": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "ACTIVE"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Accounts",
+            "description": "Endpoints de gestion des comptes"
+        }
+    ]
+}
