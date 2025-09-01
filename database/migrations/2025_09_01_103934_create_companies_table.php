@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('website')->nullable();
             $table->string('taxId')->nullable();
             $table->string('currency')->nullable();
-            $table->string('addressLine1')->nullable();
+            $table->string('address')->nullable();
             $table->string('addressLine2')->nullable();
             $table->string('city')->nullable();
             $table->string('region')->nullable();

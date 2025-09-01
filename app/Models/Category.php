@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\UsesUuid;
 
 class Category extends Model
 {
-    use UsesUuid;
+    use HasFactory,UsesUuid;
 
     protected $table = 'category';
     protected $primaryKey = 'id';

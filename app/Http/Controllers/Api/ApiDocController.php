@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api;
  * @OA\Info(
  *   version="1.0.0",
  *   title="Top All Money API",
- *   description="Documentation de l'API Laravel 12 avec Swagger (L5-Swagger)",
+ *   description="Documentation de l'API top all money",
  *   @OA\Contact(email="support@tonapp.com")
  * )
  *

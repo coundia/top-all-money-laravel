@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('localId')->nullable();
             $table->string('code')->nullable();
             $table->text('description')->nullable();
-            $table->string('typeEntry')->default('DEBIT');
+            $table->string('typeEntry')->nullable();
             $table->timestamp('createdAt')->useCurrent();
             $table->timestamp('updatedAt')->useCurrent();
             $table->timestamp('deletedAt')->nullable();

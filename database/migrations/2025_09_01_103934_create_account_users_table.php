@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('role')->nullable();
             $table->string('status')->nullable();
             $table->string('invitedBy')->nullable();
-            $table->timestamp('invitedAt')->useCurrent();
+             $table->timestamp('invitedAt')->useCurrent();
             $table->timestamp('acceptedAt')->nullable();
             $table->timestamp('revokedAt')->nullable();
             $table->timestamp('createdAt')->useCurrent();

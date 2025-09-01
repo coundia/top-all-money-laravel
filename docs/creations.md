@@ -42,3 +42,6 @@ php artisan optimize:clear
 php artisan l5-swagger:generate
 
 php artisan route:list --path=documentation 
+
+
+php artisan storage:link
