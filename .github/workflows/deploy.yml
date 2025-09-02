@@ -23,20 +23,23 @@ jobs:
           key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: composer-${{ runner.os }}-
 
+      # Installer dev-deps pour les tests
       - name: Install Composer dependencies (with dev for tests)
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Prepare .env.testing (SQLite) + migrate
         run: |
           cp .env.example .env.testing || true
-          echo "APP_ENV=testing" > .env.testing
-          echo "APP_DEBUG=true" >> .env.testing
-          echo "APP_URL=http://localhost" >> .env.testing
-          echo "DB_CONNECTION=sqlite" >> .env.testing
-          echo "DB_DATABASE=$(pwd)/database/testing.sqlite" >> .env.testing
-          echo "CACHE_DRIVER=array" >> .env.testing
-          echo "QUEUE_CONNECTION=sync" >> .env.testing
-          echo "SESSION_DRIVER=array" >> .env.testing
+          {
+            echo "APP_ENV=testing"
+            echo "APP_DEBUG=true"
+            echo "APP_URL=http://localhost"
+            echo "DB_CONNECTION=sqlite"
+            echo "DB_DATABASE=$(pwd)/database/testing.sqlite"
+            echo "CACHE_DRIVER=array"
+            echo "QUEUE_CONNECTION=sync"
+            echo "SESSION_DRIVER=array"
+          } > .env.testing
           mkdir -p database
           rm -f database/testing.sqlite && touch database/testing.sqlite
           php artisan key:generate --env=testing
@@ -45,6 +48,7 @@ jobs:
       - name: Run Laravel tests
         run: php artisan test --colors=never
 
+      # Recompiler sans dev-deps pour l’artefact de prod
       - name: Optimize vendor for production
         run: composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
@@ -82,8 +86,8 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
-          ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
+          # Vérif secrets requis
           missing=()
           [[ -z "${SSH_PRIVATE_KEY:-}" ]] && missing+=("SSH_PRIVATE_KEY")
           [[ -z "${SERVER_USER:-}"      ]] && missing+=("SERVER_USER")
@@ -93,46 +97,55 @@ jobs:
             exit 1
           fi
 
+          # SSH ready
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
 
+          # Crée le dossier cible
           ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" "mkdir -p \"$SERVER_PATH\""
 
+          # Déploiement: protéger storage/ et public/storage et .env
           rsync -az --delete \
+            --exclude 'storage' \
+            --exclude 'public/storage' \
+            --exclude '.env' \
             --chown=$SERVER_USER:www-data \
             --chmod=Du=rwx,Dg=rwx,Do=rx,Fu=rw,Fg=rw,Fo=r \
             deploy/ "$SERVER_USER@$SERVER_IP:$SERVER_PATH"
 
-          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" bash -s -- "$SERVER_PATH" "$ENV_FILE" << 'EOF'
+          # Script distant
+          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" bash -s -- "$SERVER_PATH" << 'EOF'
           set -Eeuo pipefail
           APP_DIR="$1"
-          ENV_FILE_CONTENT="$2"
           cd "$APP_DIR"
 
-          if [ ! -f ".env" ] && [ -n "$ENV_FILE_CONTENT" ]; then
-            printf "%s" "$ENV_FILE_CONTENT" > .env
+          # Le .env doit exister et ne pas être vide (géré uniquement côté serveur)
+          if [ ! -s ".env" ]; then
+            echo "ERROR: .env is missing or empty at $APP_DIR/.env"
+            echo "Hint: create it on server: sudo -u $(whoami) nano $APP_DIR/.env"
+            exit 1
           fi
 
-          # Dossiers nécessaires pour les caches Laravel
+          # Dossiers nécessaires
           mkdir -p storage/app storage/logs storage/framework/{cache,sessions,testing,views} bootstrap/cache
           chown -R "$(whoami)":www-data storage bootstrap/cache || true
           chmod -R ug+rwX storage bootstrap/cache
 
-          # Nettoyage avant recache
+          # Nettoyage des caches (avant recache)
           php artisan cache:clear || true
           php artisan config:clear || true
           php artisan route:clear || true
           php artisan view:clear  || true
 
-          # Clé & migrations
+          # Génère la clé si absente
           if ! grep -q '^APP_KEY=' .env 2>/dev/null || grep -q '^APP_KEY=$' .env ; then
             php artisan key:generate --force || true
           fi
-          php artisan migrate --force
 
-          # Recache propre
+          # Migrations + recache
+          php artisan migrate --force
           php artisan config:cache
           php artisan route:cache
           php artisan view:cache
