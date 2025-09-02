@@ -611,5 +611,6 @@ namespace App\OpenApi;
  *   @OA\Property(property="body", type="string"),
  *   @OA\Property(property="sender", type="string", nullable=true)
  * )
+ *
  */
 final class Schemas {}
