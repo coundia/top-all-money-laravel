@@ -50,12 +50,7 @@ class AccountForm
                 TextInput::make('currency'),
                 Toggle::make('isDefault')
                     ->required(),
-                DateTimePicker::make('createdAt')
-                    ->required(),
-                DateTimePicker::make('updatedAt')
-                    ->required(),
-                DateTimePicker::make('deletedAt'),
-                DateTimePicker::make('syncAt'),
+
                 TextInput::make('version')
                     ->required()
                     ->numeric()

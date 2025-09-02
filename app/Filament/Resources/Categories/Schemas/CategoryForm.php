@@ -20,12 +20,7 @@ class CategoryForm
                 Textarea::make('description')
                     ->columnSpanFull(),
                 TextInput::make('typeEntry'),
-                DateTimePicker::make('createdAt')
-                    ->required(),
-                DateTimePicker::make('updatedAt')
-                    ->required(),
-                DateTimePicker::make('deletedAt'),
-                DateTimePicker::make('syncAt'),
+
                 Toggle::make('isShared')
                     ->required(),
                 TextInput::make('createdBy'),

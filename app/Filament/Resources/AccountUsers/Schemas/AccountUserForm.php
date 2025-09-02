@@ -29,12 +29,7 @@ class AccountUserForm
                     ->required(),
                 DateTimePicker::make('acceptedAt'),
                 DateTimePicker::make('revokedAt'),
-                DateTimePicker::make('createdAt')
-                    ->required(),
-                DateTimePicker::make('updatedAt')
-                    ->required(),
-                DateTimePicker::make('deletedAt'),
-                DateTimePicker::make('syncAt'),
+
                 TextInput::make('version')
                     ->required()
                     ->numeric()

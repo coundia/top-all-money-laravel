@@ -35,12 +35,7 @@ class TransactionEntryForm
                 TextInput::make('companyId'),
                 TextInput::make('customerId'),
                 TextInput::make('debtId'),
-                DateTimePicker::make('createdAt')
-                    ->required(),
-                DateTimePicker::make('updatedAt')
-                    ->required(),
-                DateTimePicker::make('deletedAt'),
-                DateTimePicker::make('syncAt'),
+
                 TextInput::make('version')
                     ->required()
                     ->numeric()

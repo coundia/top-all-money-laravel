@@ -32,12 +32,7 @@ class DebtForm
                     ->columnSpanFull(),
                 TextInput::make('account'),
                 TextInput::make('customerId'),
-                DateTimePicker::make('createdAt')
-                    ->required(),
-                DateTimePicker::make('updatedAt')
-                    ->required(),
-                DateTimePicker::make('deletedAt'),
-                DateTimePicker::make('syncAt'),
+
                 TextInput::make('createdBy'),
                 TextInput::make('version')
                     ->required()
