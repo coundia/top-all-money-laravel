@@ -16,7 +16,7 @@ namespace App\Http\Controllers\Api;
  * )
  *
  * @OA\Server(
- *   url="https://api.tonapp.com",
+ *   url="https://topall.megastore.sn",
  *   description="Production"
  * )
  *

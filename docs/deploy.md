@@ -11,3 +11,11 @@ sudo usermod -aG www-data deploy
 # set private in github
 $SSH_PRIVATE_KEY
 
+# when errors
+php artisan optimize:clear
+php artisan key:generate --force
+php artisan config:cache
+sudo chown www-data:www-data database/database.sqlite
+sudo chmod 664 database/database.sqlite
+
+
