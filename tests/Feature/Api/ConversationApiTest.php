@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\Conversation;
 use Illuminate\Support\Str;
@@ -11,9 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Feature tests for Conversation API endpoints.
  */
-class ConversationApiTest extends TestCase
+class ConversationApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
 
     public function test_index_returns_paginated_conversations(): void
     {

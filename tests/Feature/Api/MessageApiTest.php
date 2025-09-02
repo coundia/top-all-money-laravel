@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\Message;
 use App\Models\Conversation;
@@ -10,9 +11,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Feature tests for Message API
  */
-class MessageApiTest extends TestCase
+class MessageApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
 
     public function test_index_returns_paginated_messages(): void
     {

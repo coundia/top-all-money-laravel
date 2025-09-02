@@ -3,15 +3,15 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\StockLevel;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class StockLevelApiTest extends TestCase
+class StockLevelApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
 
     public function test_index_paginated(): void
     {

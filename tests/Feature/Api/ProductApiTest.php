@@ -3,13 +3,14 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProductApiTest extends TestCase
+class ProductApiTest extends ApiTestCase
 {
     use RefreshDatabase;
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\TransactionItem;
 use Illuminate\Support\Str;
@@ -11,9 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Feature tests for TransactionItem API endpoints.
  */
-class TransactionItemApiTest extends TestCase
+class TransactionItemApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
 
     public function test_index_returns_paginated_items(): void
     {

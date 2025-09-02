@@ -2,16 +2,15 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\Account;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AccountApiTest extends TestCase
+class AccountApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
-
 
     public function test_index_returns_paginated_accounts(): void
     {

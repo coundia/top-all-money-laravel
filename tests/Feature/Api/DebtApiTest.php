@@ -3,15 +3,15 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\Debt;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class DebtApiTest extends TestCase
+class DebtApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
 
     public function test_store_creates(): void
     {

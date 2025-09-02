@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\ApiTestCase;
 use Tests\TestCase;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CategoryApiTest extends TestCase
+class CategoryApiTest extends ApiTestCase
 {
-    use RefreshDatabase;
 
     public function test_index_returns_paginated_categories(): void
     {

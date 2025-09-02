@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Filament\Resources\Categories\Tables;
+
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+class CategoriesTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->searchable(),
+                TextColumn::make('remoteId')
+                    ->searchable(),
+                TextColumn::make('localId')
+                    ->searchable(),
+                TextColumn::make('code')
+                    ->searchable(),
+                TextColumn::make('typeEntry')
+                    ->searchable(),
+                TextColumn::make('createdAt')
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('updatedAt')
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('deletedAt')
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('syncAt')
+                    ->dateTime()
+                    ->sortable(),
+                IconColumn::make('isShared')
+                    ->boolean(),
+                TextColumn::make('createdBy')
+                    ->searchable(),
+                TextColumn::make('account')
+                    ->searchable(),
+                TextColumn::make('version')
+                    ->numeric()
+                    ->sortable(),
+                IconColumn::make('isDirty')
+                    ->boolean(),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}
