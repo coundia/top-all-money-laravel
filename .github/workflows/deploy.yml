@@ -1,0 +1,122 @@
+name: Deploy to OVH Server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, bcmath, intl, curl, sqlite, pdo_mysql, pdo_pgsql
+          tools: composer
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install Composer dependencies (prod)
+        run: composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+
+      - name: Prepare .env.testing (SQLite) + migrate
+        run: |
+          cp .env.example .env.testing || true
+          echo "APP_ENV=testing" > .env.testing
+          echo "APP_DEBUG=true" >> .env.testing
+          echo "APP_URL=http://localhost" >> .env.testing
+          echo "DB_CONNECTION=sqlite" >> .env.testing
+          echo "DB_DATABASE=$(pwd)/database/testing.sqlite" >> .env.testing
+          echo "CACHE_DRIVER=array" >> .env.testing
+          echo "QUEUE_CONNECTION=sync" >> .env.testing
+          echo "SESSION_DRIVER=array" >> .env.testing
+          mkdir -p database
+          rm -f database/testing.sqlite && touch database/testing.sqlite
+          php artisan key:generate --env=testing
+          php artisan migrate --env=testing --force
+
+      - name: Run Laravel tests
+        run: php artisan test --colors=never
+
+      - name: Prepare artifact
+        run: |
+          mkdir -p deploy
+          rsync -a \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude "node_modules" \
+            --exclude "tests" \
+            --exclude "storage" \
+            --exclude ".env" \
+            --exclude "database/*.sqlite" \
+            ./ deploy/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: laravel-build
+          path: deploy/
+
+  deploy-on-prod:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SERVER_PATH: "/var/www/topall"
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: laravel-build
+          path: deploy/
+
+      - name: Deploy to prod OVH Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          if [[ -z "$SSH_PRIVATE_KEY" || -z "$SERVER_USER" || -z "$SERVER_IP" ]]; then
+            echo "Error: Missing environment variables!"
+            exit 1
+          fi
+
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | tee ~/.ssh/id_rsa >/dev/null
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+
+          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" "mkdir -p \"$SERVER_PATH\""
+
+          rsync -az --delete \
+            --chown=$SERVER_USER:www-data \
+            --chmod=Du=rwx,Dg=rwx,Do=rx,Fu=rw,Fg=rw,Fo=r \
+            deploy/ "$SERVER_USER@$SERVER_IP:$SERVER_PATH"
+
+          ssh -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" bash -s -- "$SERVER_PATH" "$ENV_FILE" << 'EOF'
+          set -e
+          APP_DIR="$1"
+          ENV_FILE_CONTENT="$2"
+          cd "$APP_DIR"
+
+          if [ ! -f ".env" ] && [ -n "$ENV_FILE_CONTENT" ]; then
+            printf "%s" "$ENV_FILE_CONTENT" > .env
+          fi
+
+          mkdir -p storage bootstrap/cache
+          chmod -R ug+rwX storage bootstrap/cache
+
+          php artisan key:generate --force || true
+          php artisan migrate --force
+          php artisan optimize
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan storage:link || true
+          php artisan l5-swagger:generate || true
+          EOF
