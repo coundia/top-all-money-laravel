@@ -15,7 +15,11 @@ $SSH_PRIVATE_KEY
 php artisan optimize:clear
 php artisan key:generate --force
 php artisan config:cache
+
 sudo chown www-data:www-data database/database.sqlite
 sudo chmod 664 database/database.sqlite
+
+
+php artisan db:seed --class=DemoUserSeeder
 
 

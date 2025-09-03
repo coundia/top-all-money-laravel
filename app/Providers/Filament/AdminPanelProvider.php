@@ -7,6 +7,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -26,6 +27,12 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Logout demo')
+                    ->icon('heroicon-o-arrow-right-on-rectangle')
+                    ->url('/demo-logout') ,
+            ])
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -59,6 +66,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->login(\App\Filament\Pages\Auth\Login::class)
+            ->registration()
             ->authMiddleware([
                 Authenticate::class,
             ]);
