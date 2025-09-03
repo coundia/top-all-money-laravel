@@ -129,9 +129,9 @@ jobs:
           fi
 
           # Dossiers nécessaires
-          mkdir -p storage/app storage/logs storage/framework/{cache,sessions,testing,views} bootstrap/cache
-          chown -R "$(whoami)":www-data storage bootstrap/cache || true
-          chmod -R ug+rwX storage bootstrap/cache
+          # mkdir -p storage/app storage/logs storage/framework/{cache,sessions,testing,views} bootstrap/cache
+          # chown -R "$(whoami)":www-data storage bootstrap/cache || true
+          # chmod -R ug+rwX storage bootstrap/cache
 
           # Nettoyage des caches (avant recache)
           php artisan cache:clear || true
