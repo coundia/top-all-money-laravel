@@ -2,6 +2,8 @@
 
 php artisan install:api
 
+composer require darkaonline/l5-swagger
+
 [http://localhost:8000/api/documentation](http://localhost:8000/api/documentation)
 
 
