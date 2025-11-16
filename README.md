@@ -65,4 +65,4 @@ Backoffice
 [https://topall.megastore.sn/](https://topall.megastore.sn/)
 Api docs :
 [https://topall.megastore.sn/api/documentation](https://topall.megastore.sn/api/documentation)
-![api_docs.png](docs/api_docs.png)
+![api_docs.png](docs/api_docs.png) 
